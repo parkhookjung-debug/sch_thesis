@@ -1,0 +1,54 @@
+# ── 비밀·로컬 환경 (절대 커밋하지 않음) ──
+.env
+.env.*
+!.env.example
+*.local
+
+# 자격·키 파일
+*.pem
+secrets.json
+credentials.json
+*.key
+
+# ── OS / 에디터 ──
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ── 로그 ──
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ── Python ──
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+.venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ── Node / 프론트 ──
+node_modules/
+frontend/node_modules/
+web/node_modules/
+
+# 이 저장소는 배포 편의상 `frontend/dist/` 를 커밋할 수 있습니다.
+# dist 를 Git에서 빼고 싶다면 아래 주석을 해제하세요.
+# frontend/dist/
+
+# 투어패스 상세 크롤: 이미지·중간 덤프(용량·재현성)
+output/images/
+output/_*.txt
+output/_*.json

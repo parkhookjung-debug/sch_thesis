@@ -1,0 +1,134 @@
+{
+  "macro_f1": 0.8411938938254728,
+  "classification_report": {
+    "cafe_rest": {
+      "precision": 0.7777777777777778,
+      "recall": 0.7,
+      "f1-score": 0.7368421052631579,
+      "support": 10.0
+    },
+    "go_home": {
+      "precision": 0.8181818181818182,
+      "recall": 0.9,
+      "f1-score": 0.8571428571428571,
+      "support": 10.0
+    },
+    "indoor_backup": {
+      "precision": 0.8181818181818182,
+      "recall": 0.9,
+      "f1-score": 0.8571428571428571,
+      "support": 10.0
+    },
+    "indoor_visit": {
+      "precision": 0.875,
+      "recall": 0.7,
+      "f1-score": 0.7777777777777778,
+      "support": 10.0
+    },
+    "meal": {
+      "precision": 1.0,
+      "recall": 0.8,
+      "f1-score": 0.8888888888888888,
+      "support": 10.0
+    },
+    "short_walk": {
+      "precision": 0.9090909090909091,
+      "recall": 1.0,
+      "f1-score": 0.9523809523809523,
+      "support": 10.0
+    },
+    "sunset_finish": {
+      "precision": 0.75,
+      "recall": 0.9,
+      "f1-score": 0.8181818181818182,
+      "support": 10.0
+    },
+    "accuracy": 0.8428571428571429,
+    "macro avg": {
+      "precision": 0.8497474747474748,
+      "recall": 0.8428571428571429,
+      "f1-score": 0.8411938938254728,
+      "support": 70.0
+    },
+    "weighted avg": {
+      "precision": 0.8497474747474746,
+      "recall": 0.8428571428571429,
+      "f1-score": 0.8411938938254727,
+      "support": 70.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      7,
+      2,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    [
+      1,
+      9,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      9,
+      0,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      0,
+      2,
+      7,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      8,
+      0,
+      2
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      10,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      9
+    ]
+  ],
+  "labels": [
+    "cafe_rest",
+    "go_home",
+    "indoor_backup",
+    "indoor_visit",
+    "meal",
+    "short_walk",
+    "sunset_finish"
+  ]
+}

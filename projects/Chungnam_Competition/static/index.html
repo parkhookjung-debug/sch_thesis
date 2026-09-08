@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>충남 당일 코스 — UI 안내</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100dvh; font-family: "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
+      background: linear-gradient(180deg, #0f172a 0%, #1e293b 45%, #f4f4f5 45%);
+      color: #0f172a;
+    }
+    .top {
+      color: #f1f5f9; text-align: center; padding: max(1.5rem, env(safe-area-inset-top)) 1.25rem 1.5rem;
+    }
+    .top h1 { font-size: 1.45rem; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 0.35rem; }
+    .top p { font-size: 0.9rem; opacity: 0.9; margin: 0; line-height: 1.5; }
+    .card {
+      max-width: 28rem; margin: 0 auto; padding: 0 1rem 2rem;
+    }
+    .inner {
+      background: #fff; border-radius: 1.25rem; box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      padding: 1.35rem 1.15rem; border: 1px solid #e4e4e7;
+    }
+    .inner h2 { font-size: 0.95rem; margin: 0 0 0.75rem; color: #18181b; }
+    .steps {
+      font-size: 0.88rem; line-height: 1.65; color: #3f3f46; margin: 0; padding-left: 1.2rem;
+    }
+    .steps code { font-size: 0.8rem; background: #f4f4f5; padding: 0.1em 0.4em; border-radius: 0.35em; }
+    .hint { font-size: 0.78rem; color: #71717a; margin: 1rem 0 0; line-height: 1.5; }
+    a.legacy {
+      display: block; text-align: center; margin-top: 1.1rem; font-size: 0.9rem; color: #3b82f6; font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <h1>충남 당일 코스</h1>
+    <p>최신 UI(Vite / React)는 <strong>빌드가 있을 때</strong> 이 주소에서 열립니다.</p>
+  </div>
+  <div class="card">
+    <div class="inner">
+      <h2>로컬에서 한 번만 실행</h2>
+      <ol class="steps">
+        <li>터미널에서 프로젝트의 <code>frontend</code> 폴더로 이동</li>
+        <li><code>npm install</code></li>
+        <li><code>npm run build</code> → <code>frontend/dist</code> 가 생깁니다</li>
+        <li>이 서버(<code>python main.py</code>)를 <strong>다시 시작</strong>한 뒤 이 페이지를 새로고침</li>
+      </ol>
+      <p class="hint">
+        <code>frontend/dist/index.html</code> 이 있으면 백엔드가 자동으로 Vite UI를 씁니다. 
+        (예전에는 이 파일이 없을 때 <code>static</code> 의 긴 HTML이 뜨는 것이 기본이어서, 구 UI와 헷갈릴 수 있었습니다.)
+      </p>
+      <a class="legacy" href="/legacy">이전에 쓰던 한 페이지 프로토 UI 보기 (레거시)</a>
+    </div>
+  </div>
+</body>
+</html>

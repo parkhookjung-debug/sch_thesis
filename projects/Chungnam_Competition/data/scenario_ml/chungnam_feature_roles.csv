@@ -1,0 +1,31 @@
+﻿column_name,role,data_type,notes
+scenario_id,id,string,unique scenario identifier; exclude from model features
+duration_type,feature,categorical,2h / half_day / full_day
+weather_type,feature,categorical,sunny / cloudy / rainy
+rain_prob,feature,numeric,0-100 precipitation probability
+dust_level,feature,categorical,good / normal / bad
+hour,feature,numeric,0-23 local hour
+trip_goal,feature,categorical,healing / photo / family / indoor / experience etc.
+current_place_type,feature,categorical,nature / festival / indoor_culture / photo_spot / cafe_area / history
+companion_type,feature,categorical,solo / couple / friends / family / family_large
+adult_count,feature,numeric,number of adults
+child_count,feature,numeric,number of children
+transport,feature,categorical,car / public
+activity_level,feature,categorical,low / medium / high
+avg_stay_minutes,feature,numeric,estimated average stay of current place
+indoor_ratio,feature,numeric,0-1 indoor proportion
+event_active,feature,binary,0/1 whether event is active
+event_schedule_known,feature,binary,0/1 whether schedule is known
+tags,feature_text,multi_label_text,pipe-separated tags; split and multi-hot encode
+hunger,feature,numeric,derived state feature
+fatigue,feature,numeric,derived state feature
+need_indoor,feature,numeric,derived state feature
+keep_mood,feature,numeric,derived state feature
+move_tolerance,feature,numeric,derived state feature
+kids_tolerance,feature,numeric,derived state feature
+photo_motivation,feature,numeric,derived state feature
+course_depth,target_or_feature,ordinal,can be used as target for separate model or as known policy output
+next_scene,target,multiclass,primary multiclass target
+meal_style_primary,target_optional,multiclass,only populated for meal cases; current class imbalance is severe
+meal_style_secondary,target_optional,multiclass,"secondary label; use for analysis, not primary modeling"
+confidence_grade,meta,categorical,"label confidence A/B/C; usually exclude from training, can use for filtering"

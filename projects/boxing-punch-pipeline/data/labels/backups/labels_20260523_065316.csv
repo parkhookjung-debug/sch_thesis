@@ -1,0 +1,10 @@
+video_id,start_frame,apex_frame,end_frame,label
+LIM 5,8,21,42,jab
+LIM 5,42,53,64,cross
+LIM 5,64,86,91,hook
+LIM 5,91,124,124,hook
+LIM 5,124,154,154,hook
+LIM 5,153,181,181,hook
+LIM 5,181,211,211,uppercut
+LIM 5,211,241,241,uppercut
+LIM 5,241,268,268,uppercut

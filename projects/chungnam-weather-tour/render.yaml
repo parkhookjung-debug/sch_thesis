@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: chungnam-weather-tour
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: TOUR_API_KEY
+        sync: false
+      - key: WEATHER_API_KEY
+        sync: false
+      - key: NODE_VERSION
+        value: 20.11.0

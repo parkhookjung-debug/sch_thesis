@@ -1,0 +1,54 @@
+{
+  "by_name": {
+    "온양민속박물관": {
+      "tourpass_available": true,
+      "tourpass_confidence": 0.52,
+      "pass_benefit_type": "discount",
+      "pass_value_level": "medium",
+      "pass_category": "attraction",
+      "time_ticket_fit": "good",
+      "pass_notice": "투어패스 활용 가능성이 있는 후보입니다. 혜택 여부는 방문 전 확인이 필요합니다.",
+      "official_verified": false
+    },
+    "파라다이스 스파 도고": {
+      "tourpass_available": true,
+      "tourpass_confidence": 0.48,
+      "pass_benefit_type": "discount",
+      "pass_value_level": "high",
+      "pass_category": "experience",
+      "time_ticket_fit": "good",
+      "pass_notice": "투어패스 활용 가능성이 있는 후보입니다. 혜택 여부는 방문 전 확인이 필요합니다.",
+      "official_verified": false
+    },
+    "외암민속마을": {
+      "tourpass_available": true,
+      "tourpass_confidence": 0.44,
+      "pass_benefit_type": "unknown",
+      "pass_value_level": "medium",
+      "pass_category": "attraction",
+      "time_ticket_fit": "normal",
+      "pass_notice": "투어패스 활용 가능성이 있는 후보입니다. 혜택 여부는 방문 전 확인이 필요합니다.",
+      "official_verified": false
+    },
+    "신정호 카페거리": {
+      "tourpass_available": null,
+      "tourpass_confidence": 0.25,
+      "pass_benefit_type": "unknown",
+      "pass_value_level": "low",
+      "pass_category": "cafe",
+      "time_ticket_fit": "normal",
+      "pass_notice": "패스보다 지역 상권·휴식 동선으로 연결한 후보입니다. 혜택 여부는 방문 전 확인이 필요합니다.",
+      "official_verified": false
+    },
+    "곡교천 은행나무길": {
+      "tourpass_available": null,
+      "tourpass_confidence": 0.2,
+      "pass_benefit_type": "none",
+      "pass_value_level": "low",
+      "pass_category": "attraction",
+      "time_ticket_fit": "poor",
+      "pass_notice": "야외 위주 후보입니다. 날씨·시간에 맞춰 우선순위를 조정했습니다.",
+      "official_verified": false
+    }
+  }
+}

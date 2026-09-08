@@ -1,0 +1,21 @@
+# Large datasets / archives (back up separately, not on GitHub)
+*.zip
+ImageCLEF2026-DeepFakeDetection-Tes/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

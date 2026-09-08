@@ -1,0 +1,650 @@
+[
+  {
+    "test_id": "weakness_beginner",
+    "text": "하프가드에서 자꾸 당하는데, 너무 어려워서 못하겠어요",
+    "analysis_time": 0.01388239860534668,
+    "confidence": 1.0,
+    "scores": {
+      "intent": 1.0,
+      "difficulty": 1.0,
+      "level": 1.0,
+      "positions": 1.0,
+      "techniques": 1.0,
+      "negation": 1.0,
+      "intensity": 1.0,
+      "emotions": 1.0,
+      "safety": 1.0,
+      "duration": 1.0
+    },
+    "result": {
+      "level": "beginner",
+      "positions": [
+        "guard"
+      ],
+      "duration": "medium",
+      "gi_preference": "both",
+      "intent": "improve_weakness",
+      "intent_confidence": 0.8,
+      "difficulty_preference": "easy",
+      "detected_intents": [
+        "improve_weakness"
+      ],
+      "concerns_or_limitations": "",
+      "emotional_state": [
+        "frustration"
+      ],
+      "safety_priority": "normal",
+      "specific_techniques": [
+        "하프가드"
+      ],
+      "technique_categories": [
+        "guard"
+      ],
+      "training_focus": "technique",
+      "confidence_score": 1.0,
+      "synonym_matches": {
+        "하프가드": true,
+        "어려워": true
+      },
+      "negation_analysis": {
+        "has_negation": false,
+        "negated_concepts": [],
+        "scope_analysis": {}
+      },
+      "intensity_analysis": {
+        "level": "medium",
+        "score": 0.5,
+        "modifiers": []
+      },
+      "context_analysis": {},
+      "user_context": {
+        "has_patterns": false
+      },
+      "user_pattern_match": {
+        "score": 0.0,
+        "matched_patterns": []
+      },
+      "fuzzy_techniques": [],
+      "analysis_method": "enhanced_pattern_based_v2_improved"
+    },
+    "expected": {
+      "intent": "improve_weakness",
+      "difficulty_preference": "easy",
+      "level": "beginner",
+      "positions": [
+        "guard"
+      ],
+      "emotional_state": [
+        "frustration"
+      ],
+      "specific_techniques": [
+        "하프가드"
+      ]
+    },
+    "priority": "high"
+  },
+  {
+    "test_id": "negation_learning",
+    "text": "트라이앵글은 말고 다른 서브미션들을 차근차근 배우고 싶어요",
+    "analysis_time": 0.011275291442871094,
+    "confidence": 1.0,
+    "scores": {
+      "intent": 0.0,
+      "difficulty": 1.0,
+      "level": 0.0,
+      "positions": 1.0,
+      "techniques": 1.0,
+      "negation": 1.0,
+      "intensity": 1.0,
+      "emotions": 1.0,
+      "safety": 1.0,
+      "duration": 1.0
+    },
+    "result": {
+      "level": "beginner",
+      "positions": [
+        "submission"
+      ],
+      "duration": "medium",
+      "gi_preference": "both",
+      "intent": "avoid",
+      "intent_confidence": 0.9,
+      "difficulty_preference": "normal",
+      "detected_intents": [
+        "learn",
+        "avoid"
+      ],
+      "concerns_or_limitations": "",
+      "emotional_state": [],
+      "safety_priority": "normal",
+      "specific_techniques": [
+        "트라이앵글"
+      ],
+      "technique_categories": [
+        "submission"
+      ],
+      "training_focus": "technique",
+      "confidence_score": 1.0,
+      "synonym_matches": {
+        "트라이앵글": true,
+        "배우고": true
+      },
+      "negation_analysis": {
+        "has_negation": true,
+        "negated_concepts": [
+          {
+            "negated": "트라이앵글은",
+            "preferred": null,
+            "type": "exclusive",
+            "confidence": 0.9
+          }
+        ],
+        "scope_analysis": {}
+      },
+      "intensity_analysis": {
+        "level": "medium",
+        "score": 0.5,
+        "modifiers": []
+      },
+      "context_analysis": {
+        "time_preference": "gradual"
+      },
+      "user_context": {
+        "has_patterns": false
+      },
+      "user_pattern_match": {
+        "score": 0.0,
+        "matched_patterns": []
+      },
+      "fuzzy_techniques": [
+        "트라이앵글"
+      ],
+      "analysis_method": "enhanced_pattern_based_v2_improved"
+    },
+    "expected": {
+      "intent": "learn",
+      "difficulty_preference": "normal",
+      "negation_analysis": {
+        "has_negation": true
+      },
+      "positions": [
+        "submission"
+      ]
+    },
+    "priority": "high"
+  },
+  {
+    "test_id": "competition_prep",
+    "text": "경기 준비 중인데 공격적인 가드 패스를 집중적으로 연습하고 싶습니다",
+    "analysis_time": 0.010434865951538086,
+    "confidence": 1.0,
+    "scores": {
+      "intent": 1.0,
+      "difficulty": 1.0,
+      "level": 0.0,
+      "positions": 1.0,
+      "techniques": 1.0,
+      "negation": 1.0,
+      "intensity": 1.0,
+      "emotions": 1.0,
+      "safety": 1.0,
+      "duration": 1.0
+    },
+    "result": {
+      "level": "advanced",
+      "positions": [
+        "guard_pass",
+        "guard"
+      ],
+      "duration": "long",
+      "gi_preference": "gi",
+      "intent": "compete",
+      "intent_confidence": 0.95,
+      "difficulty_preference": "challenging",
+      "detected_intents": [
+        "compete",
+        "practice"
+      ],
+      "concerns_or_limitations": "",
+      "emotional_state": [],
+      "safety_priority": "normal",
+      "specific_techniques": [
+        "가드패스"
+      ],
+      "technique_categories": [
+        "guard_pass"
+      ],
+      "training_focus": "technique",
+      "confidence_score": 1.0,
+      "synonym_matches": {
+        "패스": true,
+        "연습": true,
+        "경기": true
+      },
+      "negation_analysis": {
+        "has_negation": false,
+        "negated_concepts": [],
+        "scope_analysis": {}
+      },
+      "intensity_analysis": {
+        "level": "high",
+        "score": 0.8,
+        "modifiers": [
+          "집중적으로"
+        ]
+      },
+      "context_analysis": {},
+      "user_context": {
+        "has_patterns": false
+      },
+      "user_pattern_match": {
+        "score": 0.0,
+        "matched_patterns": []
+      },
+      "fuzzy_techniques": [],
+      "analysis_method": "enhanced_pattern_based_v2_improved"
+    },
+    "expected": {
+      "intent": "compete",
+      "difficulty_preference": "challenging",
+      "positions": [
+        "guard_pass"
+      ],
+      "intensity_analysis": {
+        "level": "high"
+      }
+    },
+    "priority": "high"
+  },
+  {
+    "test_id": "safety_concern",
+    "text": "무릎 부상이 있어서 안전한 기술 위주로 30분만 가볍게 하고 싶어요",
+    "analysis_time": 0.010468482971191406,
+    "confidence": 1.0,
+    "scores": {
+      "intent": 1.0,
+      "difficulty": 0.0,
+      "level": 0.0,
+      "positions": 1.0,
+      "techniques": 1.0,
+      "negation": 1.0,
+      "intensity": 1.0,
+      "emotions": 1.0,
+      "safety": 1.0,
+      "duration": 1.0
+    },
+    "result": {
+      "level": "beginner",
+      "positions": [],
+      "duration": "short",
+      "gi_preference": "gi",
+      "intent": "practice",
+      "intent_confidence": 0.5,
+      "difficulty_preference": "normal",
+      "detected_intents": [],
+      "concerns_or_limitations": "부상 관련 제약, 무릎 관련 제약",
+      "emotional_state": [],
+      "safety_priority": "high",
+      "specific_techniques": [],
+      "technique_categories": [],
+      "training_focus": "general",
+      "confidence_score": 1.0,
+      "synonym_matches": {},
+      "negation_analysis": {
+        "has_negation": false,
+        "negated_concepts": [],
+        "scope_analysis": {}
+      },
+      "intensity_analysis": {
+        "level": "low",
+        "score": 0.3,
+        "modifiers": [
+          "가볍게"
+        ]
+      },
+      "context_analysis": {},
+      "user_context": {
+        "has_patterns": false
+      },
+      "user_pattern_match": {
+        "score": 0.0,
+        "matched_patterns": []
+      },
+      "fuzzy_techniques": [],
+      "analysis_method": "enhanced_pattern_based_v2_improved"
+    },
+    "expected": {
+      "intent": "practice",
+      "duration": "short",
+      "safety_priority": "high",
+      "concerns_or_limitations": "무릎"
+    },
+    "priority": "high"
+  },
+  {
+    "test_id": "mastery_focused",
+    "text": "딥하프가드에서 완전히 마스터하고 싶습니다",
+    "analysis_time": 0.009626150131225586,
+    "confidence": 1.0,
+    "scores": {
+      "intent": 1.0,
+      "difficulty": 0.0,
+      "level": 0.0,
+      "positions": 1.0,
+      "techniques": 1.0,
+      "negation": 1.0,
+      "intensity": 1.0,
+      "emotions": 1.0,
+      "safety": 1.0,
+      "duration": 1.0
+    },
+    "result": {
+      "level": "advanced",
+      "positions": [
+        "guard"
+      ],
+      "duration": "medium",
+      "gi_preference": "both",
+      "intent": "strengthen",
+      "intent_confidence": 0.9,
+      "difficulty_preference": "challenging",
+      "detected_intents": [
+        "strengthen",
+        "learn"
+      ],
+      "concerns_or_limitations": "",
+      "emotional_state": [],
+      "safety_priority": "normal",
+      "specific_techniques": [
+        "하프가드",
+        "딥하프가드"
+      ],
+      "technique_categories": [
+        "guard"
+      ],
+      "training_focus": "technique",
+      "confidence_score": 1.0,
+      "synonym_matches": {
+        "하프가드": true,
+        "배우고": true
+      },
+      "negation_analysis": {
+        "has_negation": false,
+        "negated_concepts": [],
+        "scope_analysis": {}
+      },
+      "intensity_analysis": {
+        "level": "very_high",
+        "score": 1.0,
+        "modifiers": [
+          "완전"
+        ]
+      },
+      "context_analysis": {},
+      "user_context": {
+        "has_patterns": false
+      },
+      "user_pattern_match": {
+        "score": 0.0,
+        "matched_patterns": []
+      },
+      "fuzzy_techniques": [],
+      "analysis_method": "enhanced_pattern_based_v2_improved"
+    },
+    "expected": {
+      "intent": "strengthen",
+      "specific_techniques": [
+        "딥하프가드"
+      ],
+      "intensity_analysis": {
+        "level": "very_high"
+      }
+    },
+    "priority": "medium"
+  },
+  {
+    "test_id": "synonym_test",
+    "text": "하프가드에서 아무바를 배우고 싶어요",
+    "analysis_time": 0.008705615997314453,
+    "confidence": 1.0,
+    "scores": {
+      "intent": 1.0,
+      "difficulty": 0.0,
+      "level": 0.0,
+      "positions": 1.0,
+      "techniques": 0.5,
+      "negation": 1.0,
+      "intensity": 1.0,
+      "emotions": 1.0,
+      "safety": 1.0,
+      "duration": 1.0
+    },
+    "result": {
+      "level": "beginner",
+      "positions": [
+        "guard",
+        "submission"
+      ],
+      "duration": "medium",
+      "gi_preference": "both",
+      "intent": "learn",
+      "intent_confidence": 0.8,
+      "difficulty_preference": "normal",
+      "detected_intents": [
+        "learn"
+      ],
+      "concerns_or_limitations": "",
+      "emotional_state": [],
+      "safety_priority": "normal",
+      "specific_techniques": [
+        "하프가드",
+        "암바"
+      ],
+      "technique_categories": [
+        "guard",
+        "submission"
+      ],
+      "training_focus": "technique",
+      "confidence_score": 1.0,
+      "synonym_matches": {
+        "하프가드": true,
+        "암바": true,
+        "배우고": true
+      },
+      "negation_analysis": {
+        "has_negation": false,
+        "negated_concepts": [],
+        "scope_analysis": {}
+      },
+      "intensity_analysis": {
+        "level": "medium",
+        "score": 0.5,
+        "modifiers": []
+      },
+      "context_analysis": {},
+      "user_context": {
+        "has_patterns": false
+      },
+      "user_pattern_match": {
+        "score": 0.0,
+        "matched_patterns": []
+      },
+      "fuzzy_techniques": [],
+      "analysis_method": "enhanced_pattern_based_v2_improved"
+    },
+    "expected": {
+      "intent": "learn",
+      "specific_techniques": [
+        "하프가드",
+        "아무바"
+      ],
+      "synonym_matches": {
+        "하프가드": true,
+        "아무바": true
+      }
+    },
+    "priority": "medium"
+  },
+  {
+    "test_id": "complex_negation",
+    "text": "스파이더 가드 빼고 다른 오픈 가드들을 배워보고 싶어요",
+    "analysis_time": 0.0098114013671875,
+    "confidence": 1.0,
+    "scores": {
+      "intent": 0.0,
+      "difficulty": 0.0,
+      "level": 0.0,
+      "positions": 1.0,
+      "techniques": 1.0,
+      "negation": 1.0,
+      "intensity": 1.0,
+      "emotions": 1.0,
+      "safety": 1.0,
+      "duration": 1.0
+    },
+    "result": {
+      "level": "intermediate",
+      "positions": [
+        "guard"
+      ],
+      "duration": "medium",
+      "gi_preference": "both",
+      "intent": "avoid",
+      "intent_confidence": 0.9,
+      "difficulty_preference": "normal",
+      "detected_intents": [
+        "learn",
+        "avoid"
+      ],
+      "concerns_or_limitations": "",
+      "emotional_state": [],
+      "safety_priority": "normal",
+      "specific_techniques": [
+        "오픈가드",
+        "스파이더가드"
+      ],
+      "technique_categories": [
+        "guard"
+      ],
+      "training_focus": "technique",
+      "confidence_score": 1.0,
+      "synonym_matches": {},
+      "negation_analysis": {
+        "has_negation": true,
+        "negated_concepts": [
+          {
+            "negated": "가드",
+            "preferred": null,
+            "type": "exclusive",
+            "confidence": 0.9
+          }
+        ],
+        "scope_analysis": {}
+      },
+      "intensity_analysis": {
+        "level": "medium",
+        "score": 0.5,
+        "modifiers": []
+      },
+      "context_analysis": {},
+      "user_context": {
+        "has_patterns": false
+      },
+      "user_pattern_match": {
+        "score": 0.0,
+        "matched_patterns": []
+      },
+      "fuzzy_techniques": [
+        "오픈가드",
+        "스파이더가드"
+      ],
+      "analysis_method": "enhanced_pattern_based_v2_improved"
+    },
+    "expected": {
+      "intent": "learn",
+      "negation_analysis": {
+        "has_negation": true
+      },
+      "positions": [
+        "guard"
+      ]
+    },
+    "priority": "medium"
+  },
+  {
+    "test_id": "emotional_intensity",
+    "text": "정말 너무너무 답답해서 완전히 새로운 기술을 살짝 배워보고 싶어요",
+    "analysis_time": 0.01173090934753418,
+    "confidence": 1.0,
+    "scores": {
+      "intent": 0.0,
+      "difficulty": 0.0,
+      "level": 0.0,
+      "positions": 1.0,
+      "techniques": 1.0,
+      "negation": 1.0,
+      "intensity": 1.0,
+      "emotions": 1.0,
+      "safety": 1.0,
+      "duration": 1.0
+    },
+    "result": {
+      "level": "beginner",
+      "positions": [],
+      "duration": "medium",
+      "gi_preference": "gi",
+      "intent": "strengthen",
+      "intent_confidence": 0.9,
+      "difficulty_preference": "challenging",
+      "detected_intents": [
+        "strengthen",
+        "learn"
+      ],
+      "concerns_or_limitations": "",
+      "emotional_state": [
+        "frustration"
+      ],
+      "safety_priority": "normal",
+      "specific_techniques": [],
+      "technique_categories": [],
+      "training_focus": "general",
+      "confidence_score": 1.0,
+      "synonym_matches": {
+        "좌절": true
+      },
+      "negation_analysis": {
+        "has_negation": false,
+        "negated_concepts": [],
+        "scope_analysis": {}
+      },
+      "intensity_analysis": {
+        "level": "very_high",
+        "score": 1.0,
+        "modifiers": [
+          "완전",
+          "너무너무"
+        ]
+      },
+      "context_analysis": {},
+      "user_context": {
+        "has_patterns": false
+      },
+      "user_pattern_match": {
+        "score": 0.0,
+        "matched_patterns": []
+      },
+      "fuzzy_techniques": [],
+      "analysis_method": "enhanced_pattern_based_v2_improved"
+    },
+    "expected": {
+      "intent": "learn",
+      "emotional_state": [
+        "frustration"
+      ],
+      "intensity_analysis": {
+        "level": "very_high"
+      }
+    },
+    "priority": "low"
+  }
+]

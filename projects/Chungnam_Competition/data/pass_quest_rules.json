@@ -1,0 +1,14 @@
+{
+  "quest_type_map": {
+    "benefit_first": "pass_benefit_first",
+    "food_cafe_linked": "pass_food_cafe_linked",
+    "family_friendly": "pass_family_halfday",
+    "rainy_day_safe": "pass_rainy_day",
+    "short_trip": "pass_short_trip",
+    "festival_linked": "pass_festival_linked",
+    "experience_focused": "pass_experience_focused"
+  },
+  "pass_quest_disclaimer": "충남투어패스 혜택 및 운영 여부는 방문 전 확인이 필요합니다. 공식 혜택 정보는 구매처·운영처에서 확인해 주세요.",
+  "pass_signal_default": "투어패스 활용 가능성을 참고해 동선을 구성했습니다",
+  "risk_notice_default": "혜택 여부는 방문 전 확인이 필요합니다"
+}

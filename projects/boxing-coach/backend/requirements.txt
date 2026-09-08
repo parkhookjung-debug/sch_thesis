@@ -1,0 +1,16 @@
+# Python 3.14 호환: 모든 패키지 minimum bound 로 표기
+# (기존 '복싱/' 폴더에서 잘 돌던 rtmlib/onnxruntime/opencv/numpy 환경 그대로 재사용)
+fastapi>=0.115
+uvicorn[standard]>=0.32
+python-multipart>=0.0.12
+pydantic>=2.9
+
+# 포즈 추정 — 기존 LIM data extraction.py 와 동일 스택
+rtmlib>=0.0.13
+# Windows: DirectML provider 로 iGPU/dGPU 가속 (Intel·AMD·NVIDIA 모두 지원)
+# 자동 선택 — 없으면 CPU fallback
+onnxruntime-directml>=1.24 ; sys_platform == "win32"
+onnxruntime>=1.24 ; sys_platform != "win32"
+opencv-python>=4.10
+numpy>=1.26
+pillow>=10.4

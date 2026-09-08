@@ -1,0 +1,6 @@
+# 선택: 가맹점 목록 OCR (npm run crawl:tourpass 의 2·3단계)
+# 설치: pip install -r requirements-ocr.txt
+easyocr>=1.7.0
+opencv-python-headless>=4.8.0
+numpy>=1.24.0
+torch>=2.0.0

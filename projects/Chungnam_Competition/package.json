@@ -1,0 +1,18 @@
+{
+  "name": "chungnam-weather-tour",
+  "private": true,
+  "scripts": {
+    "start": "node --use-system-ca server/index.mjs",
+    "gateway": "node --use-system-ca server/index.mjs",
+    "crawl:tourpass": "node scripts/crawl_tourpass_merchants.js",
+    "build:tourpass-from-maps": "python scripts/build_tourpass_merchants_from_map_data.py"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "http-proxy-middleware": "^3.0.5"
+  },
+  "devDependencies": {
+    "playwright": "^1.49.1"
+  }
+}

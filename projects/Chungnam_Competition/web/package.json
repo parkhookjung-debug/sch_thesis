@@ -1,0 +1,15 @@
+{
+  "name": "chungnam-weather-tour-web",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "충남 날씨 관광 소개 랜딩 — Express + site.json",
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "node --watch server.mjs"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "http-proxy-middleware": "^3.0.3"
+  }
+}

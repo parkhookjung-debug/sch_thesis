@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>충남 당일 코스 (날씨·의도 인지)</title>
+  <style>
+    :root {
+      --bg: #e8f4fd;
+      --accent: #2980b9;
+      --card-bg: #ffffff;
+      --text: #2c3e50;
+      --sub: #7f8c8d;
+      --tag-bg: #eaf4fb;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      transition: background 0.8s ease;
+    }
+
+    /* ── 날씨 테마 ── */
+    body.sunny  { --bg: #fef9e7; --accent: #f39c12; --tag-bg: #fef5e4; }
+    body.cloudy { --bg: #eaf0fb; --accent: #5d8fcf; --tag-bg: #dfe9f8; }
+    body.rainy  { --bg: #dce8f5; --accent: #2471a3; --tag-bg: #cee0f2; }
+
+    header {
+      background: var(--accent);
+      color: #fff;
+      padding: 20px 24px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    }
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .logo { font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
+    .city-select {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.4);
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 14px;
+      cursor: pointer;
+      outline: none;
+    }
+    .city-select option { color: #2c3e50; background: #fff; }
+
+    .weather-bar {
+      display: flex;
+      gap: 20px;
+      font-size: 14px;
+      opacity: 0.92;
+    }
+    .weather-item { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .weather-val  { font-size: 20px; font-weight: 700; }
+    .weather-lbl  { font-size: 11px; opacity: 0.8; }
+
+    .weather-emoji {
+      font-size: 36px;
+      margin-left: auto;
+      align-self: center;
+    }
+
+    main { padding: 20px 16px 40px; max-width: 480px; margin: 0 auto; }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--sub);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .score-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .score-chip {
+      flex: 1;
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 10px 8px;
+      text-align: center;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+    }
+    .score-chip .val { font-size: 20px; font-weight: 700; color: var(--accent); }
+    .score-chip .lbl { font-size: 11px; color: var(--sub); margin-top: 2px; }
+
+    .cards { display: flex; flex-direction: column; gap: 14px; }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s;
+    }
+    .card:active { transform: scale(0.98); }
+
+    .card-img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      background: #d5e8f5;
+    }
+    .card-img-placeholder {
+      width: 100%;
+      height: 160px;
+      background: linear-gradient(135deg, var(--tag-bg), var(--bg));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+    }
+
+    .card-body { padding: 14px 16px 16px; }
+
+    .card-rank {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .card-name {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+    .card-addr {
+      font-size: 12px;
+      color: var(--sub);
+      margin-bottom: 10px;
+    }
+
+    .card-scores {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .score-badge {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 20px;
+      background: var(--tag-bg);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .tag {
+      font-size: 11px;
+      background: var(--tag-bg);
+      color: var(--accent);
+      padding: 3px 9px;
+      border-radius: 20px;
+    }
+
+    .card-copy {
+      font-size: 13px;
+      color: var(--sub);
+      line-height: 1.5;
+      border-left: 3px solid var(--accent);
+      padding-left: 10px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 60px 0;
+      color: var(--sub);
+      font-size: 15px;
+    }
+    .loading-spinner {
+      width: 36px; height: 36px;
+      border: 3px solid var(--tag-bg);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .load-more-btn {
+      width: 100%;
+      padding: 14px;
+      margin-top: 16px;
+      background: var(--card-bg);
+      border: 2px solid var(--accent);
+      color: var(--accent);
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .load-more-btn:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+    .load-more-btn:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    .total-info {
+      text-align: center;
+      font-size: 12px;
+      color: var(--sub);
+      margin-bottom: 16px;
+    }
+
+    .intent-bar {
+      background: rgba(255,255,255,0.95);
+      padding: 12px 16px 16px;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .intent-bar p { font-size: 11px; color: var(--sub); margin-bottom: 8px; line-height: 1.4; }
+    .intent-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .intent-grid select {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      font-size: 13px;
+      background: #fff;
+    }
+
+    .meta-note {
+      font-size: 11px;
+      color: var(--sub);
+      margin-bottom: 12px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.7);
+      border-radius: 12px;
+      line-height: 1.5;
+    }
+
+    .plan-block {
+      margin-bottom: 20px;
+      padding: 14px;
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+    }
+    .plan-block h3 { font-size: 15px; margin-bottom: 6px; }
+    .plan-block .sub { font-size: 12px; color: var(--sub); margin-bottom: 10px; }
+    .why-list--short { margin-bottom: 8px; opacity: 0.92; }
+    .checks-list, .why-list {
+      font-size: 12px;
+      margin: 8px 0 12px;
+      padding-left: 18px;
+      color: var(--text);
+      line-height: 1.45;
+    }
+    .plan-checks-wrap {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px dashed rgba(0,0,0,0.08);
+    }
+    .plan-checks-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--sub);
+      margin-bottom: 6px;
+    }
+    .checks-list--soft {
+      font-size: 11px;
+      color: var(--sub);
+      margin: 0 0 0;
+      line-height: 1.4;
+    }
+    .score-total-line { font-size: 14px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+    .score-axis-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+    .score-chip-axis {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 8px;
+      background: var(--tag-bg);
+      color: var(--accent);
+    }
+    .practical-line {
+      font-size: 12px;
+      color: var(--text);
+      margin-bottom: 10px;
+      padding: 8px 10px;
+      background: rgba(41,128,185,0.06);
+      border-radius: 10px;
+      line-height: 1.45;
+    }
+    .practical-line .transport-note { display: block; margin-top: 4px; font-size: 10px; color: var(--sub); }
+    .why-compact { margin: 10px 0 8px; }
+    .why-compact-title { font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--accent); }
+    .why-compact ul { margin: 0; padding-left: 18px; font-size: 12px; line-height: 1.45; color: var(--text); }
+    .why-compact li { margin-bottom: 4px; }
+    .card-story {
+      font-size: 11px;
+      color: var(--sub);
+      font-style: italic;
+      line-height: 1.45;
+      margin: 6px 0 8px;
+      padding-left: 8px;
+      border-left: 2px solid rgba(41, 128, 185, 0.35);
+    }
+    .card-copy--muted { font-size: 12px; color: var(--sub); line-height: 1.45; border-left: 2px solid #e0e0e0; padding-left: 8px; margin-top: 6px; }
+    .card-detail-toggle { margin-top: 8px; font-size: 11px; }
+    .card-detail-toggle summary { cursor: pointer; font-weight: 600; color: var(--accent); }
+    .card-detail-inner { font-size: 11px; color: var(--sub); margin-top: 8px; line-height: 1.45; }
+    .trigger-box {
+      margin-top: 10px;
+      padding: 10px;
+      background: #fff8e6;
+      border-radius: 10px;
+      font-size: 11px;
+      border: 1px solid #f5e0a8;
+    }
+    .why-place {
+      font-size: 11px;
+      color: var(--sub);
+      margin: 6px 0 12px;
+      padding-left: 10px;
+      border-left: 3px solid var(--accent);
+      line-height: 1.45;
+    }
+    .weather-fb {
+      width: 100%;
+      font-size: 11px;
+      line-height: 1.45;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      background: rgba(255, 193, 7, 0.35);
+      border: 1px solid rgba(255, 200, 100, 0.6);
+      border-radius: 10px;
+      color: #fff;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+    .weather-bar-inner { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; }
+
+    .card-stack { margin-bottom: 14px; }
+    .card-actions { padding: 0 16px 12px; }
+    .btn-next-course {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 12px;
+      border: 2px solid var(--accent);
+      background: #fff;
+      color: var(--accent);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-next-course:hover, .btn-next-course.active {
+      background: var(--accent);
+      color: #fff;
+    }
+    .course-host { margin-top: 0; }
+    .course-panel {
+      margin-top: 8px;
+      border-radius: 14px;
+      border: 1px solid rgba(41,128,185,0.25);
+      background: rgba(255,255,255,0.85);
+      overflow: hidden;
+    }
+    .course-panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .course-close {
+      font-size: 11px;
+      border: none;
+      background: transparent;
+      color: var(--sub);
+      cursor: pointer;
+    }
+    .course-step { padding: 10px 12px 12px; }
+    .course-step-lbl { font-size: 11px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+    .course-loading, .course-empty { font-size: 12px; color: var(--sub); padding: 8px 0; }
+    .np-card {
+      display: flex;
+      gap: 10px;
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid #e8e8e8;
+      overflow: hidden;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .np-card:hover { border-color: var(--accent); }
+    .np-card.selected { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(41,128,185,0.2); }
+    .np-thumb { width: 72px; min-height: 72px; flex-shrink: 0; background: #eef5fb; object-fit: cover; }
+    .np-body { flex: 1; padding: 8px 10px 8px 0; min-width: 0; }
+    .np-type { font-size: 10px; color: var(--accent); font-weight: 700; margin-right: 4px; }
+    .np-name { font-size: 13px; font-weight: 700; }
+    .np-meta { font-size: 11px; color: var(--sub); margin-top: 4px; }
+    .np-src { font-size: 10px; color: #0d9488; font-weight: 600; margin-top: 3px; }
+    .np-reason { font-size: 10px; color: var(--accent); margin-top: 6px; line-height: 1.35; }
+    .course-arrow { font-size: 11px; color: var(--accent); font-weight: 600; margin: 6px 0 0 4px; }
+    .np-card.primary-pick { border: 2px solid var(--accent); box-shadow: 0 2px 10px rgba(41,128,185,0.15); }
+    .cc-summary { padding: 8px 0 10px; border-bottom: 1px solid rgba(0,0,0,0.06); margin-bottom: 10px; }
+    .cc-summary strong { font-size: 14px; display: block; margin-bottom: 6px; color: var(--text); }
+    .cc-why { font-size: 12px; color: var(--sub); line-height: 1.45; margin: 4px 0 0; }
+    .cc-after { font-size: 11px; color: var(--accent); margin-top: 6px; font-weight: 600; }
+    .cc-why-lead { font-weight: 600; color: var(--text); margin-top: 6px; }
+    .cc-stage-more { font-size: 11px; margin-top: 6px; color: var(--sub); }
+    .cc-stage-more summary { cursor: pointer; font-weight: 600; color: var(--accent); }
+    .cc-mobility { font-size: 12px; color: var(--text); margin: 6px 0 4px; line-height: 1.4; }
+    .cc-why-title, .cc-after-title { font-size: 11px; font-weight: 700; margin: 8px 0 4px; color: var(--accent); }
+    .cc-after-list { margin: 0 0 0 16px; padding: 0; font-size: 11px; line-height: 1.45; color: var(--text); }
+    .cc-primary { background: rgba(41,128,185,0.06); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+    .cc-primary-name { font-size: 15px; font-weight: 800; color: var(--text); }
+    .cc-score { font-size: 11px; color: var(--sub); margin: 4px 0 8px; }
+    .cc-alt { font-size: 12px; margin-top: 8px; }
+    .cc-alt summary { cursor: pointer; font-weight: 600; color: var(--accent); }
+  </style>
+</head>
+<body class="sunny">
+
+<header>
+  <div class="header-top">
+    <div class="logo">충남 당일 코스</div>
+    <select class="city-select" id="citySelect" onchange="load()">
+      <option value="전체">🗺 충남 전체</option>
+      <option value="아산">아산</option>
+      <option value="공주">공주</option>
+      <option value="보령">보령</option>
+      <option value="서산">서산</option>
+      <option value="논산">논산</option>
+      <option value="부여">부여</option>
+      <option value="당진">당진</option>
+      <option value="태안">태안</option>
+      <option value="홍성">홍성</option>
+      <option value="천안">천안</option>
+      <option value="금산">금산</option>
+      <option value="서천">서천</option>
+      <option value="예산">예산</option>
+      <option value="청양">청양</option>
+    </select>
+  </div>
+  <div class="weather-bar" id="weatherBar">
+    <div style="opacity:0.7;align-self:center;">날씨 불러오는 중...</div>
+  </div>
+</header>
+
+<div class="intent-bar">
+  <p>당일 기상 맥락과 정적 관광 메타를 합친 <strong>규칙 기반 출발 전 코스 제안</strong>입니다. 추천 순위는 ML이 아니라 휴리스틱이며, 실시간 개장·교통은 반영하지 않습니다.</p>
+  <div class="intent-grid">
+    <select id="companionSelect" onchange="load()">
+      <option value="solo">1인</option>
+      <option value="couple">커플</option>
+      <option value="family">가족</option>
+      <option value="friends">친구</option>
+    </select>
+    <select id="goalSelect" onchange="load()">
+      <option value="healing">힐링</option>
+      <option value="photo">사진</option>
+      <option value="walking">걷기</option>
+      <option value="indoor">실내</option>
+      <option value="culture">문화</option>
+      <option value="kids">키즈</option>
+    </select>
+    <select id="durationSelect" onchange="load()">
+      <option value="2h">약 2시간</option>
+      <option value="half-day" selected>반나절</option>
+      <option value="full-day">종일</option>
+    </select>
+    <select id="transportSelect" onchange="load()">
+      <option value="car">자가용</option>
+      <option value="public">대중교통</option>
+    </select>
+    <select id="adultCountSelect" onchange="load()" title="성인 인원">
+      <option value="1">성인 1</option>
+      <option value="2" selected>성인 2</option>
+      <option value="3">성인 3</option>
+      <option value="4">성인 4</option>
+    </select>
+    <select id="childCountSelect" onchange="load()" title="아이 동반 인원">
+      <option value="0" selected>아이 0</option>
+      <option value="1">아이 1</option>
+      <option value="2">아이 2</option>
+      <option value="3">아이 3</option>
+    </select>
+  </div>
+</div>
+
+<main>
+  <div id="metaNote"></div>
+  <div id="planSection"></div>
+  <div id="scoreSection"></div>
+  <div class="section-title">전체 후보 랭킹</div>
+  <p style="font-size:12px;color:var(--sub);margin:-8px 0 12px;line-height:1.5">날씨·지도만 보는 대신, <strong style="color:var(--text)">어디 갈지·다음에 뭘 할지</strong>를 빠르게 정리해 드려요.</p>
+  <div id="cards" class="loading">
+    <div class="loading-spinner"></div>
+    데이터 로딩 중...
+  </div>
+  <button class="load-more-btn" id="loadMoreBtn" style="display:none" onclick="loadMore()">
+    더보기
+  </button>
+</main>
+
+<script>
+  const PLACE_EMOJI = {
+    '자연': '🌿', '산책': '🚶', '역사': '🏯', '해변': '🏖️',
+    '온천': '♨️', '캠핑': '⛺', '사진맛집': '📸', '축제': '🎉',
+    '맛집': '🍽️', '레저': '🎯', '전시': '🖼️', '카페': '☕',
+  };
+
+  const PAGE_SIZE = 8;
+  let allRecs = [];
+  let shownCount = 0;
+  /** /api/course에 강수·미세먼지 맥락 전달용 */
+  let lastWeatherContext = null;
+  let lastTodayCoursePitch = '';
+
+  let courseChains = {};
+  let courseOpenCid = null;
+
+  function courseApiQuery(lat, lng, category, hour, spotId, spotName, extra) {
+    let q = 'lat=' + lat + '&lng=' + lng + '&category=' + encodeURIComponent(category) + '&hour=' + hour;
+    q += '&trip_goal=' + encodeURIComponent(document.getElementById('goalSelect').value);
+    q += '&companion=' + encodeURIComponent(document.getElementById('companionSelect').value);
+    q += '&duration=' + encodeURIComponent(document.getElementById('durationSelect').value);
+    q += '&transport=' + encodeURIComponent(document.getElementById('transportSelect').value);
+    var adultEl = document.getElementById('adultCountSelect');
+    var childEl = document.getElementById('childCountSelect');
+    if (adultEl) q += '&adult_count=' + encodeURIComponent(adultEl.value);
+    if (childEl) q += '&child_count=' + encodeURIComponent(childEl.value);
+    if (spotId) q += '&spot_id=' + encodeURIComponent(spotId);
+    if (spotName) q += '&spot_name=' + encodeURIComponent(spotName);
+    if (lastWeatherContext) {
+      q += '&precip_prob=' + encodeURIComponent(lastWeatherContext.precip_prob != null ? lastWeatherContext.precip_prob : 0);
+      q += '&dust=' + encodeURIComponent(lastWeatherContext.dust != null ? lastWeatherContext.dust : 1);
+      if (lastWeatherContext.temp != null) q += '&temp=' + encodeURIComponent(lastWeatherContext.temp);
+      if (lastWeatherContext.sky != null) q += '&sky=' + encodeURIComponent(lastWeatherContext.sky);
+    }
+    if (extra && extra.course_path) q += '&course_path=' + encodeURIComponent(extra.course_path);
+    if (extra && extra.user_next_hint) q += '&user_next_hint=' + encodeURIComponent(extra.user_next_hint);
+    if (extra && extra.user_custom_note) q += '&user_custom_note=' + encodeURIComponent(extra.user_custom_note);
+    return q;
+  }
+
+  function renderCourseChooser(cid, lat, lng, category, spotId, spotName) {
+    const host = document.getElementById('host-' + cid);
+    if (!host) return;
+    host.style.display = 'block';
+    const sid = spotId || '';
+    const sn = spotName || '';
+    host.innerHTML = '<div class="course-panel"><div class="course-panel-head"><span>› 다음은 어떻게 정할까요?</span>'
+      + '<button type="button" class="course-close" data-close-cid="' + esc(cid) + '">닫기</button></div>'
+      + '<div class="course-step" style="padding:12px">'
+      + '<p class="cc-why" style="margin:0 0 10px">자동은 <strong>규칙 기반</strong>이에요. 원하면 방향만 골라 주세요.</p>'
+      + '<button type="button" class="course-choose-ai" data-cid="' + esc(cid) + '" data-lat="' + lat + '" data-lng="' + lng
+      + '" data-cat="' + esc(category) + '" data-spot-id="' + esc(sid) + '" data-spot-name="' + esc(sn)
+      + '" style="width:100%;padding:10px;margin-bottom:8px;border-radius:12px;border:2px solid var(--accent);background:#fff;color:var(--accent);font-weight:700;cursor:pointer">규칙 기반 자동 추천</button>'
+      + '<p style="font-size:10px;color:var(--sub);margin:-4px 0 8px;text-align:center">다음 장면·후보는 날씨·시간·의도 규칙으로 정해요.</p>'
+      + '<p class="cc-why-title" style="margin:8px 0 6px">원하는 방향</p>'
+      + '<div style="display:flex;flex-wrap:wrap;gap:6px">'
+      + ['meal:식사', 'cafe:카페', 'quiet:조용', 'photo:사진', 'indoor:실내', 'kids:아이'].map(function (x) {
+        var p = x.split(':');
+        return '<button type="button" class="course-choose-hint" data-cid="' + esc(cid) + '" data-lat="' + lat + '" data-lng="' + lng
+          + '" data-cat="' + esc(category) + '" data-spot-id="' + esc(sid) + '" data-spot-name="' + esc(sn) + '" data-hint="' + p[0] + '" '
+          + 'style="font-size:11px;padding:6px 10px;border-radius:999px;border:1px solid rgba(41,128,185,0.35);background:rgba(41,128,185,0.08);cursor:pointer">' + esc(p[1]) + '</button>';
+      }).join('')
+      + '</div></div></div>';
+  }
+
+  function escForId(s) {
+    let h = 0;
+    const str = String(s || '');
+    for (let i = 0; i < str.length; i++) h = ((h << 5) - h) + str.charCodeAt(i) | 0;
+    return ('h' + (h >>> 0).toString(16)).replace(/[^a-zA-Z0-9_-]/g, 'x');
+  }
+
+  function makeCardId(d, rank) {
+    return 'c' + rank + '_' + escForId(d.name + (d.address || ''));
+  }
+
+  const RESTAURANT_TYPES = new Set([
+    'restaurant', 'korean_restaurant', 'chinese_restaurant',
+    'japanese_restaurant', 'food',
+  ]);
+  const TYPE_LABEL = {
+    restaurant: '식당', korean_restaurant: '한식', chinese_restaurant: '중식',
+    cafe: '카페', coffee_shop: '카페', bakery: '베이커리',
+  };
+  const STEP_LABELS = ['식사', '카페 · 디저트'];
+
+  function getTypeLabel(types) {
+    if (!types) return '장소';
+    for (const t of types) {
+      if (TYPE_LABEL[t]) return TYPE_LABEL[t];
+    }
+    return '식당';
+  }
+
+  function placeCategory(place) {
+    for (const t of (place.types || [])) {
+      if (RESTAURANT_TYPES.has(t)) return 'restaurant';
+    }
+    return 'cafe';
+  }
+
+  function renderCoursePanel(cid) {
+    const host = document.getElementById('host-' + cid);
+    if (!host) return;
+    const chain = courseChains[cid];
+    if (!chain || !chain.length) {
+      host.innerHTML = '';
+      host.style.display = 'none';
+      return;
+    }
+    host.style.display = 'block';
+    let html = '<div class="course-panel">';
+    html += '<div class="course-panel-head"><span>› 코스 이어가기 · 다음 장면</span>';
+    html += '<button type="button" class="course-close" data-close-cid="' + cid + '">닫기</button></div>';
+    chain.forEach(function (step, stepIdx) {
+      html += '<div class="course-step">';
+      html += '<div class="course-step-lbl">' + (stepIdx === 0 ? '🌿' : '➜') + ' ' + (stepIdx + 1) + '단계 — ' + esc(step.label);
+      if (stepIdx > 0 && step.places && step.places.length) {
+        html += ' <span style="opacity:0.75;font-weight:600">(선택한 장소 기준)</span>';
+      }
+      html += '</div>';
+      if (step.loading) {
+        html += '<div class="course-loading">불러오는 중…</div>';
+      } else if (step.payload && step.payload.next_stage) {
+        const ns = step.payload.next_scene || step.payload.next_stage;
+        const sm = step.payload.scene_mode || null;
+        const stageType = step.payload.next_stage.type || '';
+        const isMealStage = stageType === 'meal';
+        const split = !!(step.payload.meta && step.payload.meta.indoor_transition_split);
+        const showComfortPanels = isMealStage;
+        const pr = step.payload.primary_recommendation;
+        const meta = step.payload.meta || {};
+        const whyNs = ns.why || [];
+        const wmn = (step.payload.next_scene && step.payload.next_scene.why_meal_now) || [];
+        const hl = step.payload.next_step_headline || (ns.headline) || ns.title || '다음 단계';
+        const gnotes = step.payload.guided_flow_notes || [];
+        html += '<div class="cc-summary">';
+        html += '<p class="cc-why-title" style="margin:0 0 4px">다음 단계 추천</p>';
+        html += '<p style="font-size:15px;font-weight:800;margin:0 0 4px;color:var(--text)">' + esc(hl) + '</p>';
+        html += '<p style="font-size:11px;color:var(--sub);margin:0 0 8px">' + esc(ns.title || '') + '</p>';
+        if (gnotes.length) {
+          html += '<ul style="margin:6px 0 8px 16px;font-size:11px;color:#0f766e;line-height:1.45">';
+          gnotes.forEach(function (g) { html += '<li>' + esc(g) + '</li>'; });
+          html += '</ul>';
+        }
+        html += '<p class="cc-why-title" style="margin-top:6px">왜 이렇게 판단했나요?</p><ul class="cc-after-list">';
+        whyNs.slice(0, 3).forEach(function (w) { html += '<li>' + esc(w) + '</li>'; });
+        html += '</ul>';
+        if (sm && sm.title) {
+          html += '<p class="cc-why-title" style="margin-top:10px">' + (split ? '실내 전환 방식' : '다음 장면 방식') + '</p>';
+          html += '<p style="font-size:13px;font-weight:700;margin:0 0 6px;color:var(--text)">' + esc(sm.title) + '</p>';
+          html += '<p class="cc-why-title">왜 이 방식인가요?</p><ul class="cc-after-list">';
+          (sm.why || []).slice(0, 3).forEach(function (w) { html += '<li>' + esc(w) + '</li>'; });
+          html += '</ul>';
+        }
+        html += '</div>';
+        if (showComfortPanels && wmn.length) {
+          html += '<p class="cc-why-title" style="margin-top:8px">왜 지금 식사인가</p><ul class="cc-after-list">';
+          wmn.forEach(function (w) { html += '<li>' + esc(w) + '</li>'; });
+          html += '</ul>';
+        }
+        const ms = step.payload.meal_style;
+        if (showComfortPanels && ms && ms.label && ms.key !== 'none' && ms.key !== 'cafe_rest') {
+          html += '<div class="cc-meal-style" style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(0,0,0,0.06)">';
+          html += '<p style="font-size:12px;font-weight:700;color:var(--accent);margin:0 0 4px">' + (isMealStage ? '추천 식사 스타일' : '추천 실내 무드') + '</p>';
+          html += '<p style="font-size:14px;font-weight:800;margin:0 0 8px;color:var(--text)">' + esc(ms.label) + '</p>';
+          if (ms.secondary_key) {
+            html += '<p style="font-size:11px;color:var(--sub);margin:0 0 8px">보조: ' + esc(ms.secondary_label || ms.secondary_key) + '</p>';
+          }
+          html += '<p class="cc-why-title">' + (isMealStage ? '왜 이 스타일인가' : '왜 이 무드인가') + '</p><ul class="cc-after-list">';
+          (ms.why || []).slice(0, 4).forEach(function (w) { html += '<li>' + esc(w) + '</li>'; });
+          html += '</ul>';
+          var cb = step.payload.cuisine_bias;
+          if (cb && Object.keys(cb).length) {
+            html += '<details class="cc-stage-more" style="margin-top:6px"><summary>요리 편향(보조)</summary>';
+            html += '<p class="cc-why">한 ' + Number(cb.korean || 0).toFixed(2) + ' · 중 ' + Number(cb.chinese || 0).toFixed(2)
+              + ' · 일 ' + Number(cb.japanese || 0).toFixed(2) + ' · 서양 ' + Number(cb.western || 0).toFixed(2) + '</p></details>';
+          }
+          html += '</div>';
+        }
+        if (pr && pr.name) {
+          html += '<div class="cc-primary">';
+          html += '<p class="cc-why-title">1순위 추천</p>';
+          html += '<div class="cc-primary-name">' + esc(pr.name) + '</div>';
+          if (pr.data_source_note) {
+            html += '<div class="np-src">' + esc(pr.data_source_note) + '</div>';
+          }
+          if (pr.practical_info && pr.practical_info.mobility_line) {
+            html += '<div class="cc-mobility">' + esc(pr.practical_info.mobility_line) + '</div>';
+          }
+          html += '<details style="font-size:10px;color:var(--sub);margin-top:4px"><summary style="cursor:pointer;font-weight:700;color:var(--accent)">점수·세부 근거</summary>';
+          html += '<p style="margin:6px 0 0">내부 참고 ' + (pr.score != null ? Number(pr.score).toFixed(1) : '-') + ' / 100</p></details>';
+          const whyPlaceTitle = isMealStage ? '왜 이 식당인가' : '왜 이 장소인가';
+          html += '<p class="cc-why-title">' + whyPlaceTitle + '</p>';
+          (pr.why || []).forEach(function (w) { html += '<p class="cc-why">' + esc(w) + '</p>'; });
+          var topAfter = step.payload.after_this;
+          if (!topAfter || !topAfter.length) {
+            const atTitle = pr.after_this_title || '이후 이어가기';
+            html += '<p class="cc-after-title">' + esc(atTitle) + '</p><ul class="cc-after-list">';
+            (pr.after_this || []).forEach(function (w) { html += '<li>' + esc(w) + '</li>'; });
+            html += '</ul>';
+          }
+          html += '</div>';
+        } else if (meta.fallback_note) {
+          html += '<div class="course-empty">' + esc(meta.fallback_note) + '</div>';
+        }
+        const alts = step.payload.alternatives || [];
+        if (alts.length) {
+          html += '<details style="margin-top:10px;font-size:11px"><summary class="cc-why-title" style="cursor:pointer">다른 선택지 이름만</summary><ul class="cc-after-list">';
+          alts.slice(0, 8).forEach(function (p) { html += '<li>' + esc(p.name) + '</li>'; });
+          html += '</ul></details>';
+        }
+        var topAfter2 = step.payload.after_this;
+        if (topAfter2 && topAfter2.length) {
+          var afterHdr = (stageType === 'meal') ? '식사 후 이어가기' : '이후 이어가기';
+          html += '<div class="cc-primary" style="margin-top:8px;background:rgba(0,0,0,0.03)">';
+          html += '<p class="cc-after-title">' + esc(afterHdr) + '</p><ul class="cc-after-list">';
+          topAfter2.forEach(function (w) { html += '<li>' + esc(w) + '</li>'; });
+          html += '</ul></div>';
+        }
+        if (step.places && step.places.length) {
+          html += '<p style="font-size:10px;font-weight:600;margin:10px 0 6px;color:var(--sub)">마음에 들면 그대로, 아니면 바꿔 이어가기</p>';
+        }
+      }
+      if (!step.loading && (!step.places || !step.places.length) && !(step.payload && step.payload.next_stage)) {
+        html += '<div class="course-empty">근처 장소를 찾지 못했습니다.</div>';
+      }
+      if (!step.loading && step.places && step.places.length) {
+        (function () {
+          function oneCard(p, pi, isPri) {
+            const sel = step.selected && step.selected.name === p.name;
+            const thumb = p.photo_url
+              ? '<img class="np-thumb" src="' + esc(p.photo_url) + '" alt="" loading="lazy">'
+              : '<div class="np-thumb" style="display:flex;align-items:center;justify-content:center;font-size:22px">📍</div>';
+            var h = '<div class="np-card' + (sel ? ' selected' : '') + (isPri ? ' primary-pick' : '') + '" data-cid="' + cid + '" data-si="' + stepIdx + '" data-pi="' + pi + '">';
+            h += thumb;
+            h += '<div class="np-body"><span class="np-type">' + esc(getTypeLabel(p.types)) + '</span>';
+            h += '<span class="np-name">' + esc(p.name) + '</span>';
+            if (p.public_data_match || p.source_mix === 'merged') {
+              h += '<div class="np-src">' + (p.source_mix === 'merged' ? '공공데이터 + 지도 검색 보강' : '공공 관광 데이터 기반 후보') + '</div>';
+            }
+            h += '<div class="np-meta">⭐ ' + (p.rating != null ? Number(p.rating).toFixed(1) : '-') + ' · ';
+            h += (p.distance_from_prev_km != null ? esc(String(p.distance_from_prev_km)) + 'km · ' : '');
+            h += esc(p.address || '') + '</div>';
+            h += '</div></div>';
+            return h;
+          }
+          const p0 = step.places[0];
+          html += oneCard(p0, 0, !!(step.payload && step.payload.primary_recommendation));
+          if (step.places.length > 1) {
+            html += '<details style="margin-top:6px;border:1px solid rgba(0,0,0,0.06);border-radius:12px;padding:4px 8px;background:rgba(255,255,255,0.7)">';
+            html += '<summary style="font-size:11px;font-weight:700;color:var(--accent);cursor:pointer">다른 선택지도 보기 (' + (step.places.length - 1) + '곳)</summary>';
+            for (var pi = 1; pi < step.places.length; pi++) {
+              html += oneCard(step.places[pi], pi, false);
+            }
+            html += '</details>';
+          }
+        })();
+      }
+      if (stepIdx < chain.length - 1 && chain[stepIdx].selected) {
+        html += '<div class="course-arrow">› ' + esc(chain[stepIdx].selected.name) + ' 기준으로 다음 코스</div>';
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+    host.innerHTML = html;
+  }
+
+  async function courseFetchFirst(cid, lat, lng, category, extra) {
+    courseChains[cid] = [{ label: '코스 이어가기', places: [], payload: null, selected: null, loading: true }];
+    renderCoursePanel(cid);
+    try {
+      const hour = new Date().getHours();
+      const btn = document.querySelector('.btn-next-course[data-cid="' + cid + '"]');
+      const spotId = btn && btn.dataset.spotId ? btn.dataset.spotId : '';
+      const spotName = btn && btn.dataset.spotName ? btn.dataset.spotName : '';
+      const res = await fetch('/api/course?' + courseApiQuery(lat, lng, category, hour, spotId, spotName, extra || null));
+      const data = await res.json();
+      const places = data.next_places || [];
+      courseChains[cid][0] = {
+        label: '코스 이어가기',
+        places: places,
+        payload: data,
+        selected: null,
+        loading: false,
+      };
+    } catch (err) {
+      courseChains[cid][0] = { label: '코스 이어가기', places: [], payload: null, selected: null, loading: false };
+    }
+    renderCoursePanel(cid);
+  }
+
+  async function courseSelectPlace(cid, stepIdx, place) {
+    const chain = courseChains[cid];
+    if (!chain || !chain[stepIdx]) return;
+    chain[stepIdx].selected = place;
+    const nextIdx = stepIdx + 1;
+    if (nextIdx >= STEP_LABELS.length) {
+      renderCoursePanel(cid);
+      return;
+    }
+    chain[nextIdx] = { label: STEP_LABELS[nextIdx], places: [], payload: null, selected: null, loading: true };
+    renderCoursePanel(cid);
+    try {
+      const hour = new Date().getHours();
+      const cat = placeCategory(place);
+      const sid = place.place_id || '';
+      const sn = place.name || '';
+      const res = await fetch('/api/course?' + courseApiQuery(place.lat, place.lng, cat, hour, sid, sn, { course_path: 'ai' }));
+      const data = await res.json();
+      const places = data.next_places || [];
+      chain[nextIdx] = {
+        label: STEP_LABELS[nextIdx],
+        places: places,
+        payload: data,
+        selected: null,
+        loading: false,
+      };
+    } catch (err) {
+      chain[nextIdx] = { label: STEP_LABELS[nextIdx], places: [], payload: null, selected: null, loading: false };
+    }
+    renderCoursePanel(cid);
+  }
+
+  document.addEventListener('click', function (e) {
+    const closeBtn = e.target.closest('.course-close');
+    if (closeBtn) {
+      const cid = closeBtn.getAttribute('data-close-cid');
+      delete courseChains[cid];
+      if (courseOpenCid === cid) courseOpenCid = null;
+      const host = document.getElementById('host-' + cid);
+      if (host) { host.innerHTML = ''; host.style.display = 'none'; }
+      const b = document.querySelector('.btn-next-course[data-cid="' + cid + '"]');
+      if (b) b.classList.remove('active');
+      return;
+    }
+    const np = e.target.closest('.np-card');
+    if (np && np.dataset.cid != null) {
+      const cid = np.dataset.cid;
+      const si = parseInt(np.dataset.si, 10);
+      const pi = parseInt(np.dataset.pi, 10);
+      const ch = courseChains[cid];
+      if (ch && ch[si] && ch[si].places && ch[si].places[pi]) {
+        courseSelectPlace(cid, si, ch[si].places[pi]);
+      }
+      return;
+    }
+    const aiPick = e.target.closest('.course-choose-ai');
+    if (aiPick && aiPick.dataset.cid) {
+      const cid = aiPick.dataset.cid;
+      courseFetchFirst(cid, parseFloat(aiPick.dataset.lat), parseFloat(aiPick.dataset.lng), aiPick.dataset.cat || 'outdoor', { course_path: 'ai' });
+      return;
+    }
+    const hintPick = e.target.closest('.course-choose-hint');
+    if (hintPick && hintPick.dataset.cid && hintPick.dataset.hint) {
+      const cid = hintPick.dataset.cid;
+      courseFetchFirst(cid, parseFloat(hintPick.dataset.lat), parseFloat(hintPick.dataset.lng), hintPick.dataset.cat || 'outdoor', {
+        course_path: 'guided',
+        user_next_hint: hintPick.dataset.hint,
+      });
+      return;
+    }
+    const btn = e.target.closest('.btn-next-course');
+    if (!btn || !btn.dataset.cid) return;
+    const cid = btn.dataset.cid;
+    const lat = parseFloat(btn.dataset.lat);
+    const lng = parseFloat(btn.dataset.lng);
+    const cat = btn.dataset.cat || 'outdoor';
+    if (courseOpenCid === cid && courseChains[cid]) {
+      delete courseChains[cid];
+      courseOpenCid = null;
+      const host = document.getElementById('host-' + cid);
+      if (host) { host.innerHTML = ''; host.style.display = 'none'; }
+      btn.classList.remove('active');
+      return;
+    }
+    if (courseOpenCid && courseOpenCid !== cid) {
+      const prevH = document.getElementById('host-' + courseOpenCid);
+      if (prevH) { prevH.innerHTML = ''; prevH.style.display = 'none'; }
+      const prevB = document.querySelector('.btn-next-course[data-cid="' + courseOpenCid + '"]');
+      if (prevB) prevB.classList.remove('active');
+      delete courseChains[courseOpenCid];
+    }
+    courseOpenCid = cid;
+    btn.classList.add('active');
+    renderCourseChooser(cid, lat, lng, cat, btn.dataset.spotId || '', btn.dataset.spotName || '');
+  });
+
+  function getPlaceEmoji(tags) {
+    for (const t of tags) if (PLACE_EMOJI[t]) return PLACE_EMOJI[t];
+    return '📍';
+  }
+
+  function applyTheme(sky, precip) {
+    document.body.classList.remove('sunny', 'cloudy', 'rainy');
+    if (precip >= 70) document.body.classList.add('rainy');
+    else if (sky === 1) document.body.classList.add('sunny');
+    else document.body.classList.add('cloudy');
+  }
+
+  function renderWeather(w) {
+    const skyMap  = { 1: '맑음 ☀️', 3: '구름많음 ⛅', 4: '흐림 ☁️' };
+    const dustMap = { 1: '좋음', 2: '보통', 3: '나쁨 😷', 4: '매우나쁨 🚫' };
+    const pm = (w.pm25 != null && w.pm25 !== undefined) ? ` · PM2.5 ${w.pm25}` : '';
+    let fb = '';
+    if (w.weather_fallback) {
+      fb = '<div class="weather-fb"><strong>기상청 단기예보 연결 실패</strong> — 기온·강수·하늘은 <b>고정 기본값</b>입니다. '
+        + '미세먼지는 에어코리아가 붙었을 수 있습니다.'
+        + (w.weather_fallback_note ? '<br><small style="opacity:0.9">' + String(w.weather_fallback_note).replace(/</g, '&lt;') + '</small>' : '')
+        + '</div>';
+    } else if (w.fcst_time_slot && w.weather_source === 'vilagefcst') {
+      fb = '<div class="weather-fb" style="background:rgba(255,255,255,0.2)">단기예보 슬롯 <code>' + w.fcst_time_slot + '</code> 기준</div>';
+    }
+    document.getElementById('weatherBar').innerHTML = fb + `<div class="weather-bar-inner">
+      <div class="weather-item">
+        <span class="weather-val">${w.temp}°</span>
+        <span class="weather-lbl">기온(예보)</span>
+      </div>
+      <div class="weather-item">
+        <span class="weather-val">${w.precip_prob}%</span>
+        <span class="weather-lbl">강수</span>
+      </div>
+      <div class="weather-item">
+        <span class="weather-val" style="font-size:14px">${skyMap[w.sky] || '알수없음'}</span>
+        <span class="weather-lbl">하늘</span>
+      </div>
+      <div class="weather-item">
+        <span class="weather-val" style="font-size:14px">${dustMap[w.dust] || '보통'}${pm}</span>
+        <span class="weather-lbl">대기</span>
+      </div>
+    </div>`;
+  }
+
+  function renderScores(scores, total) {
+    document.getElementById('scoreSection').innerHTML = `
+      <div class="score-bar">
+        <div class="score-chip">
+          <div class="val">${Math.round(scores.outdoor * 100)}</div>
+          <div class="lbl">야외 적합</div>
+        </div>
+        <div class="score-chip">
+          <div class="val">${Math.round(scores.photo * 100)}</div>
+          <div class="lbl">사진 지수</div>
+        </div>
+        <div class="score-chip">
+          <div class="val">${Math.round(scores.indoor * 100)}</div>
+          <div class="lbl">실내 적합</div>
+        </div>
+      </div>
+      <div class="total-info">${total}곳 분석 완료</div>`;
+  }
+
+  function esc(s) {
+    if (s == null || s === '') return '';
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function renderMeta(data) {
+    const el = document.getElementById('metaNote');
+    if (!data.meta || !data.meta.confidence_notes) {
+      el.innerHTML = '';
+      return;
+    }
+    const lines = data.meta.confidence_notes.map(n => `· ${esc(n)}`).join('<br>');
+    el.innerHTML = `<div class="meta-note">${lines}</div>`;
+  }
+
+  function renderPlanBlock(plan, showTriggers) {
+    let h = `<div class="plan-block">`;
+    h += `<h3>${esc(plan.title)}</h3>`;
+    const avgPct = plan.score != null ? Math.round(Number(plan.score) * 100) : 0;
+    h += `<div class="sub">코스 평균 종합 ${avgPct}점</div>`;
+    h += `<p style="font-size:12px;font-weight:600;margin:8px 0 4px">이 코스를 제안한 이유</p><ul class="why-list why-list--short">`;
+    (plan.why || []).slice(0, 2).forEach(w => { h += `<li>${esc(w)}</li>`; });
+    h += `</ul>`;
+    (plan.places || []).forEach((p, i) => {
+      h += makeCard(p, i + 1);
+    });
+    h += `<div class="plan-checks-wrap">`;
+    h += `<p class="plan-checks-title">출발 전 확인하면 좋은 점</p><ul class="checks-list checks-list--soft">`;
+    (plan.checks || []).forEach(c => { h += `<li>${esc(c)}</li>`; });
+    h += `</ul></div>`;
+    if (showTriggers && plan.trigger_conditions && plan.trigger_conditions.length) {
+      h += `<div class="trigger-box"><strong>대안 코스를 염두에 둘 조건</strong><ul style="margin:6px 0 0 14px;line-height:1.4;font-size:11px">`;
+      plan.trigger_conditions.forEach(t => {
+        h += `<li><code>${esc(t.code)}</code> — ${esc(t.label)}</li>`;
+      });
+      h += `</ul></div>`;
+    }
+    h += `</div>`;
+    return h;
+  }
+
+  function _syntheticPlanA(recs) {
+    if (!recs || !recs.length) return null;
+    const n = Math.min(3, recs.length);
+    const slice = recs.slice(0, n);
+    const avg = slice.reduce(function (s, p) { return s + (Number(p.score) || 0); }, 0) / n;
+    return {
+      title: '오늘의 메인 코스 (랭킹 요약)',
+      score: Math.round(avg * 1000) / 1000,
+      why: [
+        '서버가 당일 코스 블록(plan_a)을 주지 않거나 비어 있을 때, 랭킹 상위 장소로 요약 코스를 표시합니다.',
+        '최신 백엔드를 쓰면 의도·날씨를 반영한 Plan A/B가 함께 내려옵니다.',
+      ],
+      checks: ['영업·입장·동선은 출발 전에 다시 확인하세요.'],
+      places: slice,
+    };
+  }
+
+  function renderPlans(data) {
+    const el = document.getElementById('planSection');
+    const recs = data.recommendations || [];
+    let planA = data.plan_a;
+    if (
+      (!planA || !planA.places || !planA.places.length) &&
+      recs.length
+    ) {
+      planA = _syntheticPlanA(recs);
+    }
+    if (!planA || !planA.places || !planA.places.length) {
+      el.innerHTML = recs.length
+        ? '<div class="meta-note">당일 코스 순서를 만들 수 없습니다. 아래 랭킹만 참고해 주세요.</div>'
+        : '';
+      return;
+    }
+    let html = '<div class="section-title">Plan A · 메인 코스</div>';
+    html += renderPlanBlock(planA, false);
+    if (data.plan_b && data.plan_b.places && data.plan_b.places.length) {
+      html += '<div class="section-title" style="margin-top:16px">Plan B · 대안 코스</div>';
+      html += renderPlanBlock(data.plan_b, true);
+    }
+    el.innerHTML = html;
+  }
+
+  function renderScoreAxisBlock(d) {
+    const total = d.total_score_100 != null ? d.total_score_100 : Math.round((Number(d.score) || 0) * 100);
+    const axes = d.score_axis_display;
+    if (!axes || !axes.length) {
+      return '<div class="score-total-line">종합 <strong>' + total + '</strong>점</div>'
+        + '<div class="score-axis-row"><span class="score-chip-axis">날씨원시 ' + Math.round((d.weather_score || 0) * 100) + '</span></div>';
+    }
+    let h = '<div class="score-total-line">종합 <strong>' + total + '</strong>점</div><div class="score-axis-row">';
+    axes.forEach(function (ax) {
+      h += '<span class="score-chip-axis">' + esc(ax.label) + ' ' + ax.earned + '/' + ax.max + '</span>';
+    });
+    h += '</div>';
+    return h;
+  }
+
+  function renderPracticalBlock(d) {
+    const pi = d.practical_info;
+    if (!pi || !pi.mobility_line) return '';
+    return '<div class="practical-line">' + esc(pi.mobility_line)
+      + '<span class="transport-note">' + esc(pi.transport_note || '') + '</span></div>';
+  }
+
+  function renderWhyBullets(d) {
+    const xs = (d.why_recommend_bullets && d.why_recommend_bullets.length)
+      ? d.why_recommend_bullets
+      : (d.concise_explanation_lines || d.why || []).slice(0, 3);
+    if (!xs.length) return '';
+    let h = '<div class="why-compact"><div class="why-compact-title">왜 추천했나요?</div><ul>';
+    xs.slice(0, 3).forEach(function (ln) { h += '<li>' + esc(ln) + '</li>'; });
+    return h + '</ul></div>';
+  }
+
+  function renderLeadBlock(d) {
+    const c = d.decision_conclusion ? '<p style="font-size:12px;font-weight:700;color:var(--accent);margin:4px 0 2px">' + esc(d.decision_conclusion) + '</p>' : '';
+    const w = d.lead_weather_sentence ? '<p class="card-copy--muted" style="margin-top:4px">' + esc(d.lead_weather_sentence) + '</p>' : '';
+    const p = d.lead_place_sentence ? '<p class="card-copy--muted" style="margin-top:4px">' + esc(d.lead_place_sentence) + '</p>' : '';
+    return c + w + p;
+  }
+
+  function renderPracticalSplit(d) {
+    const pi = d.practical_info;
+    if (!pi) return '';
+    let durLine = '';
+    if (pi.duration_fit_line) {
+      durLine = '<div class="practical-line" style="margin-top:4px;font-size:11px">' + esc(pi.duration_fit_line) + '</div>';
+    }
+    if (pi.mobility_line_distance || pi.mobility_line_drive) {
+      let h = '<div class="practical-line">';
+      if (pi.mobility_line_distance) h += esc(pi.mobility_line_distance);
+      if (pi.mobility_line_drive) h += '<br>' + esc(pi.mobility_line_drive);
+      h += '<span class="transport-note">' + esc(pi.transport_note || '') + '</span></div>';
+      return h + durLine;
+    }
+    return renderPracticalBlock(d) + durLine;
+  }
+
+  function renderStoryLine(d) {
+    const conf = typeof d.storytelling_match_confidence === 'number' ? d.storytelling_match_confidence : 0;
+    const line = (d.emotional_copy && String(d.emotional_copy).trim())
+      || (d.story_summary && String(d.story_summary).trim());
+    if (!line || conf < 0.35) return '';
+    return '<p class="card-story">' + esc(line) + '</p>';
+  }
+
+  function renderCardDetailCollapse(d, rank) {
+    const did = 'det-' + makeCardId(d, rank);
+    const det = d.why_detailed || [];
+    const w = (typeof lastWeatherContext === 'object' && lastWeatherContext) ? lastWeatherContext : {};
+    const wline = '기온 ' + (w.temp != null ? w.temp : '-') + '° · 강수 ' + (w.precip_prob != null ? w.precip_prob : '-') + '%';
+    let inner = '<div class="card-detail-inner">' + renderScoreAxisBlock(d)
+      + '<br><strong>추가 설명</strong><ul style="margin:4px 0 0 16px">';
+    det.forEach(function (x) { inner += '<li>' + esc(x) + '</li>'; });
+    inner += '</ul><br><small>예보 맥락: ' + esc(wline) + '</small></div>';
+    return '<details class="card-detail-toggle" id="' + did + '"><summary>추천 근거 자세히 보기</summary>' + inner + '</details>';
+  }
+
+  function renderCautionMini(d) {
+    const c = d.caution_lines || [];
+    if (!c.length) return '';
+    return '<p class="card-copy--muted" style="margin-top:8px"><span style="font-weight:700">출발 전 확인하면 좋은 점 · </span>' + esc(c[0]) + '</p>';
+  }
+
+  function renderTopPitch() {
+    if (!lastTodayCoursePitch) return '';
+    return '<div class="card-today-pitch" style="font-size:12px;line-height:1.5;margin:8px 0;padding:10px;border-radius:12px;background:rgba(41,128,185,0.12);white-space:pre-line">' + esc(lastTodayCoursePitch) + '</div>';
+  }
+
+  function renderIdentitySummary(d) {
+    if (!d.place_identity_summary) return '';
+    return '<p class="card-copy" style="font-size:12px;font-weight:600">' + esc(d.place_identity_summary) + '</p>';
+  }
+
+  function makeCard(d, rank, opts) {
+    opts = opts || {};
+    const withCourse = opts.withCourse !== false && d.coords && typeof d.coords.lat === 'number';
+    const cid = makeCardId(d, rank);
+    const tags = (d.tags || []).slice(0, 4).map(t => `<span class="tag">#${t}</span>`).join('');
+    const img  = d.image
+      ? `<img class="card-img" src="${d.image}" alt="${d.name}" loading="lazy" onerror="this.outerHTML='<div class=card-img-placeholder>${getPlaceEmoji(d.tags)}</div>'">`
+      : `<div class="card-img-placeholder">${getPlaceEmoji(d.tags)}</div>`;
+    const cat = esc(d.category || 'outdoor');
+    const sidAttr = d.id != null && d.id !== '' ? ` data-spot-id="${esc(String(d.id))}"` : '';
+    const btn = withCourse
+      ? `<div class="card-actions"><button type="button" class="btn-next-course" data-cid="${cid}" data-lat="${d.coords.lat}" data-lng="${d.coords.lng}" data-cat="${cat}"${sidAttr} data-spot-name="${esc(d.name)}">코스 이어가기</button></div><div class="course-host" id="host-${cid}"></div>`
+      : '';
+    return `
+      <div class="card-stack">
+      <div class="card">
+        ${img}
+        <div class="card-body">
+          <div class="card-rank">TOP ${rank}</div>
+          <div class="card-name">${d.name}</div>
+          <div class="card-addr">${d.address}</div>
+          ${renderLeadBlock(d)}
+          ${rank === 1 ? renderIdentitySummary(d) : ''}
+          ${rank === 1 ? renderTopPitch() : ''}
+          ${renderPracticalSplit(d)}
+          ${renderWhyBullets(d)}
+          ${renderStoryLine(d)}
+          <div class="card-tags">${tags}</div>
+          <div class="card-copy card-copy--muted">${d.copy}</div>
+          ${renderCautionMini(d)}
+          ${renderCardDetailCollapse(d, rank)}
+        </div>
+      </div>
+      ${btn}
+      </div>`;
+  }
+
+  function renderInitial() {
+    if (!allRecs.length) {
+      document.getElementById('cards').innerHTML = '<div class="loading">추천 장소가 없습니다.</div>';
+      document.getElementById('loadMoreBtn').style.display = 'none';
+      return;
+    }
+    shownCount = Math.min(PAGE_SIZE, allRecs.length);
+    document.getElementById('cards').innerHTML =
+      allRecs.slice(0, shownCount).map((d, i) => makeCard(d, i + 1)).join('');
+    updateLoadMoreBtn();
+  }
+
+  function loadMore() {
+    const next = Math.min(shownCount + PAGE_SIZE, allRecs.length);
+    const newCards = allRecs.slice(shownCount, next).map((d, i) => makeCard(d, shownCount + i + 1)).join('');
+    document.getElementById('cards').insertAdjacentHTML('beforeend', newCards);
+    shownCount = next;
+    updateLoadMoreBtn();
+  }
+
+  function updateLoadMoreBtn() {
+    const btn = document.getElementById('loadMoreBtn');
+    if (shownCount >= allRecs.length) {
+      btn.style.display = 'none';
+    } else {
+      btn.style.display = 'block';
+      btn.textContent = `더보기 (${shownCount}/${allRecs.length}개 표시 중)`;
+    }
+  }
+
+  async function load() {
+    const city = document.getElementById('citySelect').value;
+    const companion = document.getElementById('companionSelect').value;
+    const trip_goal = document.getElementById('goalSelect').value;
+    const duration = document.getElementById('durationSelect').value;
+    const transport = document.getElementById('transportSelect').value;
+    courseChains = {};
+    courseOpenCid = null;
+    allRecs = [];
+    shownCount = 0;
+    document.getElementById('loadMoreBtn').style.display = 'none';
+    document.getElementById('metaNote').innerHTML = '';
+    document.getElementById('planSection').innerHTML = '';
+    document.getElementById('cards').innerHTML = `
+      <div class="loading">
+        <div class="loading-spinner"></div>
+        ${city} 날씨 & 관광지 로딩 중...
+      </div>`;
+    document.getElementById('scoreSection').innerHTML = '';
+
+    const q = new URLSearchParams({
+      city,
+      top_n: '40',
+      companion,
+      trip_goal,
+      duration,
+      transport,
+      adult_count: document.getElementById('adultCountSelect') ? document.getElementById('adultCountSelect').value : '2',
+      child_count: document.getElementById('childCountSelect') ? document.getElementById('childCountSelect').value : '0',
+    });
+
+    try {
+      const res = await fetch(`/api/recommend?${q.toString()}`);
+      if (!res.ok) {
+        const t = await res.text();
+        throw new Error('API ' + res.status + ': ' + (t || '').slice(0, 240));
+      }
+      const data = await res.json();
+      if (!data.weather || data.scores == null) {
+        throw new Error('응답 형식이 올바르지 않습니다. 서버를 최신 코드로 배포했는지 확인하세요.');
+      }
+      applyTheme(data.weather.sky, data.weather.precip_prob);
+      renderWeather(data.weather);
+      renderScores(data.scores, data.total_fetched);
+      renderMeta(data);
+      renderPlans(data);
+      lastWeatherContext = data.weather;
+      lastTodayCoursePitch = data.today_course_pitch || '';
+      allRecs = data.recommendations;
+      renderInitial();
+    } catch (e) {
+      document.getElementById('cards').innerHTML = `<div class="loading">오류 발생: ${e.message}</div>`;
+    }
+  }
+
+  load();
+</script>
+</body>
+</html>

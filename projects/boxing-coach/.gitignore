@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Backend data/uploads/results
+backend/uploads/
+backend/results/
+backend/data/full_data/
+
+# Node
+node_modules/
+frontend/dist/
+.vite/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/

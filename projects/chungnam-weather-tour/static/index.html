@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>충남 날씨 관광 추천</title>
+  <style>
+    :root {
+      --bg: #e8f4fd;
+      --accent: #2980b9;
+      --card-bg: #ffffff;
+      --text: #2c3e50;
+      --sub: #7f8c8d;
+      --tag-bg: #eaf4fb;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      transition: background 0.8s ease;
+    }
+
+    /* ── 날씨 테마 ── */
+    body.sunny  { --bg: #fef9e7; --accent: #f39c12; --tag-bg: #fef5e4; }
+    body.cloudy { --bg: #eaf0fb; --accent: #5d8fcf; --tag-bg: #dfe9f8; }
+    body.rainy  { --bg: #dce8f5; --accent: #2471a3; --tag-bg: #cee0f2; }
+
+    header {
+      background: var(--accent);
+      color: #fff;
+      padding: 20px 24px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    }
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .logo { font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
+    .city-select {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.4);
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 14px;
+      cursor: pointer;
+      outline: none;
+    }
+    .city-select option { color: #2c3e50; background: #fff; }
+
+    .weather-bar {
+      display: flex;
+      gap: 20px;
+      font-size: 14px;
+      opacity: 0.92;
+    }
+    .weather-item { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .weather-val  { font-size: 20px; font-weight: 700; }
+    .weather-lbl  { font-size: 11px; opacity: 0.8; }
+
+    .weather-emoji {
+      font-size: 36px;
+      margin-left: auto;
+      align-self: center;
+    }
+
+    main { padding: 20px 16px 40px; max-width: 480px; margin: 0 auto; }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--sub);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .score-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .score-chip {
+      flex: 1;
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 10px 8px;
+      text-align: center;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+    }
+    .score-chip .val { font-size: 20px; font-weight: 700; color: var(--accent); }
+    .score-chip .lbl { font-size: 11px; color: var(--sub); margin-top: 2px; }
+
+    .cards { display: flex; flex-direction: column; gap: 14px; }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s;
+    }
+    .card:active { transform: scale(0.98); }
+
+    .card-img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      background: #d5e8f5;
+    }
+    .card-img-placeholder {
+      width: 100%;
+      height: 160px;
+      background: linear-gradient(135deg, var(--tag-bg), var(--bg));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+    }
+
+    .card-body { padding: 14px 16px 16px; }
+
+    .card-rank {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .card-name {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+    .card-addr {
+      font-size: 12px;
+      color: var(--sub);
+      margin-bottom: 10px;
+    }
+
+    .card-scores {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .score-badge {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 20px;
+      background: var(--tag-bg);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .tag {
+      font-size: 11px;
+      background: var(--tag-bg);
+      color: var(--accent);
+      padding: 3px 9px;
+      border-radius: 20px;
+    }
+
+    .card-copy {
+      font-size: 13px;
+      color: var(--sub);
+      line-height: 1.5;
+      border-left: 3px solid var(--accent);
+      padding-left: 10px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 60px 0;
+      color: var(--sub);
+      font-size: 15px;
+    }
+    .loading-spinner {
+      width: 36px; height: 36px;
+      border: 3px solid var(--tag-bg);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .load-more-btn {
+      width: 100%;
+      padding: 14px;
+      margin-top: 16px;
+      background: var(--card-bg);
+      border: 2px solid var(--accent);
+      color: var(--accent);
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .load-more-btn:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+    .load-more-btn:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    .total-info {
+      text-align: center;
+      font-size: 12px;
+      color: var(--sub);
+      margin-bottom: 16px;
+    }
+  </style>
+</head>
+<body class="sunny">
+
+<header>
+  <div class="header-top">
+    <div class="logo">충남 날씨 관광</div>
+    <select class="city-select" id="citySelect" onchange="load()">
+      <option value="전체">🗺 충남 전체</option>
+      <option value="아산">아산</option>
+      <option value="공주">공주</option>
+      <option value="보령">보령</option>
+      <option value="서산">서산</option>
+      <option value="논산">논산</option>
+      <option value="부여">부여</option>
+      <option value="당진">당진</option>
+      <option value="태안">태안</option>
+      <option value="홍성">홍성</option>
+      <option value="천안">천안</option>
+      <option value="금산">금산</option>
+      <option value="서천">서천</option>
+      <option value="예산">예산</option>
+      <option value="청양">청양</option>
+    </select>
+  </div>
+  <div class="weather-bar" id="weatherBar">
+    <div style="opacity:0.7;align-self:center;">날씨 불러오는 중...</div>
+  </div>
+</header>
+
+<main>
+  <div id="scoreSection"></div>
+  <div class="section-title">오늘의 추천</div>
+  <div id="cards" class="loading">
+    <div class="loading-spinner"></div>
+    데이터 로딩 중...
+  </div>
+  <button class="load-more-btn" id="loadMoreBtn" style="display:none" onclick="loadMore()">
+    더보기
+  </button>
+</main>
+
+<script>
+  const PLACE_EMOJI = {
+    '자연': '🌿', '산책': '🚶', '역사': '🏯', '해변': '🏖️',
+    '온천': '♨️', '캠핑': '⛺', '사진맛집': '📸', '축제': '🎉',
+    '맛집': '🍽️', '레저': '🎯', '전시': '🖼️', '카페': '☕',
+  };
+
+  const PAGE_SIZE = 8;
+  let allRecs = [];
+  let shownCount = 0;
+
+  function getPlaceEmoji(tags) {
+    for (const t of tags) if (PLACE_EMOJI[t]) return PLACE_EMOJI[t];
+    return '📍';
+  }
+
+  function applyTheme(sky, precip) {
+    document.body.classList.remove('sunny', 'cloudy', 'rainy');
+    if (precip >= 70) document.body.classList.add('rainy');
+    else if (sky === 1) document.body.classList.add('sunny');
+    else document.body.classList.add('cloudy');
+  }
+
+  function renderWeather(w) {
+    const skyMap  = { 1: '맑음 ☀️', 3: '구름많음 ⛅', 4: '흐림 ☁️' };
+    const dustMap = { 1: '좋음', 2: '보통', 3: '나쁨 😷', 4: '매우나쁨 🚫' };
+    document.getElementById('weatherBar').innerHTML = `
+      <div class="weather-item">
+        <span class="weather-val">${w.temp}°</span>
+        <span class="weather-lbl">기온</span>
+      </div>
+      <div class="weather-item">
+        <span class="weather-val">${w.precip_prob}%</span>
+        <span class="weather-lbl">강수</span>
+      </div>
+      <div class="weather-item">
+        <span class="weather-val" style="font-size:14px">${skyMap[w.sky] || '알수없음'}</span>
+        <span class="weather-lbl">하늘</span>
+      </div>
+      <div class="weather-item">
+        <span class="weather-val" style="font-size:14px">${dustMap[w.dust] || '보통'}</span>
+        <span class="weather-lbl">미세먼지</span>
+      </div>`;
+  }
+
+  function renderScores(scores, total) {
+    document.getElementById('scoreSection').innerHTML = `
+      <div class="score-bar">
+        <div class="score-chip">
+          <div class="val">${Math.round(scores.outdoor * 100)}</div>
+          <div class="lbl">야외 적합</div>
+        </div>
+        <div class="score-chip">
+          <div class="val">${Math.round(scores.photo * 100)}</div>
+          <div class="lbl">사진 지수</div>
+        </div>
+        <div class="score-chip">
+          <div class="val">${Math.round(scores.indoor * 100)}</div>
+          <div class="lbl">실내 적합</div>
+        </div>
+      </div>
+      <div class="total-info">${total}곳 분석 완료</div>`;
+  }
+
+  function makeCard(d, rank) {
+    const tags = d.tags.slice(0, 4).map(t => `<span class="tag">#${t}</span>`).join('');
+    const km   = d.distance_km >= 0 ? `${d.distance_km}km` : '';
+    const img  = d.image
+      ? `<img class="card-img" src="${d.image}" alt="${d.name}" loading="lazy" onerror="this.outerHTML='<div class=card-img-placeholder>${getPlaceEmoji(d.tags)}</div>'">`
+      : `<div class="card-img-placeholder">${getPlaceEmoji(d.tags)}</div>`;
+    return `
+      <div class="card">
+        ${img}
+        <div class="card-body">
+          <div class="card-rank">TOP ${rank}</div>
+          <div class="card-name">${d.name}</div>
+          <div class="card-addr">${d.address}</div>
+          <div class="card-scores">
+            <span class="score-badge">날씨 ${Math.round(d.weather_score * 100)}점</span>
+            <span class="score-badge">거리 ${km}</span>
+            <span class="score-badge">종합 ${Math.round(d.score * 100)}점</span>
+          </div>
+          <div class="card-tags">${tags}</div>
+          <div class="card-copy">${d.copy}</div>
+        </div>
+      </div>`;
+  }
+
+  function renderInitial() {
+    if (!allRecs.length) {
+      document.getElementById('cards').innerHTML = '<div class="loading">추천 장소가 없습니다.</div>';
+      document.getElementById('loadMoreBtn').style.display = 'none';
+      return;
+    }
+    shownCount = Math.min(PAGE_SIZE, allRecs.length);
+    document.getElementById('cards').innerHTML =
+      allRecs.slice(0, shownCount).map((d, i) => makeCard(d, i + 1)).join('');
+    updateLoadMoreBtn();
+  }
+
+  function loadMore() {
+    const next = Math.min(shownCount + PAGE_SIZE, allRecs.length);
+    const newCards = allRecs.slice(shownCount, next).map((d, i) => makeCard(d, shownCount + i + 1)).join('');
+    document.getElementById('cards').insertAdjacentHTML('beforeend', newCards);
+    shownCount = next;
+    updateLoadMoreBtn();
+  }
+
+  function updateLoadMoreBtn() {
+    const btn = document.getElementById('loadMoreBtn');
+    if (shownCount >= allRecs.length) {
+      btn.style.display = 'none';
+    } else {
+      btn.style.display = 'block';
+      btn.textContent = `더보기 (${shownCount}/${allRecs.length}개 표시 중)`;
+    }
+  }
+
+  async function load() {
+    const city = document.getElementById('citySelect').value;
+    allRecs = [];
+    shownCount = 0;
+    document.getElementById('loadMoreBtn').style.display = 'none';
+    document.getElementById('cards').innerHTML = `
+      <div class="loading">
+        <div class="loading-spinner"></div>
+        ${city} 날씨 & 관광지 로딩 중...
+      </div>`;
+    document.getElementById('scoreSection').innerHTML = '';
+
+    try {
+      const res  = await fetch(`/api/recommend?city=${encodeURIComponent(city)}&top_n=40`);
+      const data = await res.json();
+      applyTheme(data.weather.sky, data.weather.precip_prob);
+      renderWeather(data.weather);
+      renderScores(data.scores, data.total_fetched);
+      allRecs = data.recommendations;
+      renderInitial();
+    } catch (e) {
+      document.getElementById('cards').innerHTML = `<div class="loading">오류 발생: ${e.message}</div>`;
+    }
+  }
+
+  load();
+</script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+punch_type,count,arm_extension_avg,elbow_height_avg,wrist_height_avg,lean_forward_avg,elbow_angle_avg,dip_avg,arm_extension_std,elbow_height_std,wrist_height_std,lean_forward_std,elbow_angle_std,dip_std
+jab,103,5.9791,3.6189,2.3887,-1.8552,106.3024,0.0,37.8663,26.5706,17.2291,14.9519,36.0282,0.0
+cross,94,1.642,0.8131,0.7081,-0.3005,102.2281,0.0,1.53,0.7228,0.6978,0.7475,32.5029,0.0
+hook,12,1.2484,0.5191,0.4545,-0.3572,105.675,0.0,0.6775,0.4198,0.5012,0.3312,48.9424,0.0
+uppercut,25,3.4726,1.1112,0.6966,-0.5151,103.9288,2.5239,5.5115,1.6585,1.718,3.0626,34.9953,9.6831
